@@ -16,14 +16,31 @@ export const cryptoApi = createApi({
     getCryptos: builder.query({
       query: () => createRequest("/coins"),
     }),
+    getCryptoDetails: builder.query({
+      query: ({ coinId }) => createRequest(`/coins/${coinId}`),
+    }),
+    getCryptoHistory: builder.query({
+      query: ({ coinId, timeperiod }) =>
+        createRequest(`coins/${coinId}/charts?period=${timeperiod}`),
+    }),
     getMarkets: builder.query({
       query: () => createRequest("/markets"),
     }),
     getCryptoNews: builder.query({
-      query: () => createRequest("/news"),
+      query: ({ newsCategory }) =>
+        createRequest(`/news/search?query=${newsCategory}`),
+    }),
+    getExchanges: builder.query({
+      query: () => createRequest("/tickers/exchanges"),
     }),
   }),
 });
 
-export const { useGetCryptosQuery, useGetMarketsQuery, useGetCryptoNewsQuery } =
-  cryptoApi;
+export const {
+  useGetCryptosQuery,
+  useGetCryptoDetailsQuery,
+  useGetMarketsQuery,
+  useGetCryptoNewsQuery,
+  useGetCryptoHistoryQuery,
+  useGetExchangesQuery,
+} = cryptoApi;

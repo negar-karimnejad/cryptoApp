@@ -1,21 +1,26 @@
 /* eslint-disable react/prop-types */
-import  { useState } from "react";
+import { useState } from "react";
 import { Select, Typography, Row, Col, Avatar, Card } from "antd";
 import moment from "moment";
 import {
   useGetCryptoNewsQuery,
   useGetCryptosQuery,
 } from "../utilities/cryptoApi";
+import Loader from "./Loader";
 
 const { Text, Title } = Typography;
 const { Option } = Select;
-
+const demoImage =
+  "https://www.bing.com/th?id=OVFT.mpzuVZnv8dwIMRfQGPbOPC&pid=News";
 function News({ simplified }) {
   const [newsCategory, setNewsCategory] = useState("Cryptocurrency");
-  const { data: cryptoNews, isFetching } = useGetCryptoNewsQuery();
   const { data } = useGetCryptosQuery(100);
+  const { data: cryptoNews } = useGetCryptoNewsQuery({
+    newsCategory,
+  });
 
-  isFetching && "Loading...";
+  if (!cryptoNews?.data) return <Loader />;
+  console.log(cryptoNews);
   return (
     <Row gutter={[24, 24]}>
       {!simplified && (
@@ -39,31 +44,33 @@ function News({ simplified }) {
           </Select>
         </Col>
       )}
-      {cryptoNews?.result.map((news) => (
+      {cryptoNews?.data?.map((news) => (
         <Col xs={24} sm={12} lg={8} key={news.id}>
           <Card hoverable className="news-card">
             <a href={news.url} target="_blank" rel="noreferrer">
               <div className="news-image-container">
                 <Title className="news-title" level={4}>
-                  {news.source}
+                  {news.title.length > 50
+                    ? `${news.title.substring(0, 50)}...`
+                    : news.title}
                 </Title>
                 <img
                   style={{ width: 150, height: 100, objectFit: "cover" }}
-                  src={news?.imgUrl}
+                  src={news?.imgUrl || demoImage}
                   alt=""
                 />
               </div>
               <p>
-                {news.title.length > 100
-                  ? `${news.title.substring(0, 100)}...`
-                  : news.title}
+                {news.description.length > 100
+                  ? `${news.description.substring(0, 100)}...`
+                  : news.description}
               </p>
               <div className="provider-container">
                 <div>
-                  <Avatar src={news.imgUrl} alt="" />
+                  <Avatar src={news.imgUrl || demoImage} alt="" />
                   <Text className="provider-name">{news.source}</Text>
                 </div>
-                <Text>{moment(news.feedDate).startOf("ss").fromNow()}</Text>
+                <Text>{moment(news.createdAt).startOf("ss").fromNow()}</Text>
               </div>
             </a>
           </Card>

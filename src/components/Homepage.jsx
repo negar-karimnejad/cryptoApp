@@ -4,11 +4,12 @@ import { Link } from "react-router-dom";
 import { useGetMarketsQuery } from "../utilities/cryptoApi";
 import Cryptocurrencies from "./Cryptocurrencies";
 import News from "./News";
+import Loader from "./Loader";
 const { Title } = Typography;
 
 function Homepage() {
   const { data: globalStats, isFetching } = useGetMarketsQuery();
-  isFetching && "Loading...";
+  isFetching && <Loader />;
   return (
     <>
       <Title level={2} className="heading">
