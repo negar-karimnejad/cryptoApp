@@ -1,25 +1,36 @@
-import { useEffect } from "react";
-import { fetchFromAPI } from "./utilities/fetchFromApi";
-import { useState } from "react";
+import { Layout, Typography, Space } from "antd";
+import { Link, useRoutes } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import { routes } from "./routes";
 
 function App() {
-  const [coins, setCoins] = useState([]);
-
-  useEffect(() => {
-    fetchFromAPI("coins").then((data) => setCoins(data.result));
-  }, []);
+  const router = useRoutes(routes);
 
   return (
-    <>
-      {coins.map((coin) => (
-        <div key={coin.id}>
-          <img src={coin.icon} alt="" />
-          <p>{coin.name}</p>
-          <p>{coin.price}</p>
-          <p>{coin.symbol}</p>
+    <div className="app">
+      <div className="navbar">
+        <Navbar />
+      </div>
+      <div className="main">
+        <Layout>
+          <div className="routes">{router}</div>
+        </Layout>
+        <div className="footer">
+          <Typography.Title
+            level={5}
+            style={{ color: "#FFF", textAlign: "center" }}
+          >
+            Cryptoverse <br />
+            All rights reserved
+          </Typography.Title>
+          <Space>
+            <Link to="/">Home</Link>
+            <Link to="/exchanges">Exchanges</Link>
+            <Link to="/news">News</Link>
+          </Space>
         </div>
-      ))}
-    </>
+      </div>
+    </div>
   );
 }
 
